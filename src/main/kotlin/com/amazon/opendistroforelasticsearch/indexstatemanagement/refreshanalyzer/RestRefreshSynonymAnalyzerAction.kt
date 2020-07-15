@@ -170,3 +170,4 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
         const val ADD_POLICY_TIMEOUT_IN_MILLIS = 30000L
     }
 }
+

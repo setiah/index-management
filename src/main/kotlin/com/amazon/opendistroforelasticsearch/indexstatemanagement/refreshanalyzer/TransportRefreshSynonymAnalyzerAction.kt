@@ -20,7 +20,11 @@ import org.elasticsearch.threadpool.ThreadPool
 import org.elasticsearch.transport.TransportService
 import java.io.IOException
 
-class TransportRefreshSynonymAnalyzerAction : TransportBroadcastByNodeAction<RefreshSynonymAnalyzerRequest, RefreshSynonymAnalyzerResponse, TransportBroadcastByNodeAction.EmptyResult>  {
+class TransportRefreshSynonymAnalyzerAction :
+        TransportBroadcastByNodeAction<
+                RefreshSynonymAnalyzerRequest,
+                RefreshSynonymAnalyzerResponse,
+                TransportBroadcastByNodeAction.EmptyResult> {
 
     @Inject
     constructor(
@@ -83,7 +87,8 @@ class TransportRefreshSynonymAnalyzerAction : TransportBroadcastByNodeAction<Ref
         return state.blocks().globalBlockedException(ClusterBlockLevel.METADATA_WRITE)
     }
 
-    override fun checkRequestBlock(state: ClusterState, request: RefreshSynonymAnalyzerRequest?, concreteIndices: Array<String?>?): ClusterBlockException? {
+    override fun checkRequestBlock(state: ClusterState, request: RefreshSynonymAnalyzerRequest?, concreteIndices: Array<String?>?):
+            ClusterBlockException? {
         return state.blocks().indicesBlockedException(ClusterBlockLevel.METADATA_WRITE, concreteIndices)
     }
 }

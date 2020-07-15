@@ -22,7 +22,7 @@ class RefreshSynonymAnalyzerAction : ActionType<RefreshSynonymAnalyzerResponse>(
     companion object {
         const val NAME = "indices:admin/refresh_synonym_analyzer"
         val INSTANCE = RefreshSynonymAnalyzerAction()
-        val reader = Writeable.Reader { RefreshSynonymAnalyzerResponse() }
+        val reader = Writeable.Reader { inp -> RefreshSynonymAnalyzerResponse(inp) }
     }
 
     override fun getResponseReader(): Writeable.Reader<RefreshSynonymAnalyzerResponse> = reader

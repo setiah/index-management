@@ -10,8 +10,8 @@ class RefreshSynonymAnalyzerRequest : BroadcastRequest<RefreshSynonymAnalyzerReq
     constructor(vararg indices: String) : super(*indices)
 
     @Throws(IOException::class)
-    constructor(`in`: StreamInput) : super(`in`) {
-        indices = `in`.readStringArray()
-        //indicesOptions = IndicesOptions.readIndicesOptions(`in`)
+    constructor(inp: StreamInput) : super(inp) {
+        indices = inp.readStringArray()
+        //indicesOptions = IndicesOptions.readIndicesOptions(inp)
     }
 }

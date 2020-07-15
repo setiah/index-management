@@ -10,3 +10,6 @@ style:
     active: false
   MaxLineLength:
     maxLineLength: 150
+
+build:
+  maxIssues: 15
