@@ -3,7 +3,9 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyz
 import org.elasticsearch.action.support.DefaultShardOperationFailedException
 import org.elasticsearch.action.support.broadcast.BroadcastResponse
 import org.elasticsearch.common.xcontent.ConstructingObjectParser
+import org.elasticsearch.common.xcontent.XContentParser
 import java.util.*
+import java.util.function.Function
 
 class RefreshSynonymAnalyzerResponse(
         totalShards: Int,
@@ -11,21 +13,28 @@ class RefreshSynonymAnalyzerResponse(
         failedShards: Int,
         shardFailures: List<DefaultShardOperationFailedException>) : BroadcastResponse(totalShards, successfulShards, failedShards, shardFailures) {
 
-    companion object {
-        var lambda = {arg: List<BroadcastResponse> -> {
-            println("Hello")
-            arg[0]
-        }}
+    constructor()
 
-        var lmbda = {arg: Array<BroadcastResponse> ->
-            val response: BroadcastResponse = arg[0]
-            RefreshSynonymAnalyzerResponse(response.getTotalShards(), response.getSuccessfulShards(), response.getFailedShards(), response.getShardFailures().toList())
+    companion object {
+//        private val PARSER: ConstructingObjectParser<RefreshSynonymAnalyzerResponse, Void> = ConstructingObjectParser("refresh_synonym_analyzer", true) {
+//            arg: Array<Any> ->
+//            val response: BroadcastResponse = (arg as List<BroadcastResponse>)[0]
+//            RefreshSynonymAnalyzerResponse(response.getTotalShards(), response.getSuccessfulShards(), response.getFailedShards(), response.getShardFailures().toList())
+//        }
+
+        private val PARSER = ConstructingObjectParser<RefreshSynonymAnalyzerResponse, Void>("refresh_synonym_analyzer", true,
+                Function { arg: Array<Any> ->
+                    val response = arg[0] as BroadcastResponse
+                    RefreshSynonymAnalyzerResponse(response.totalShards, response.successfulShards, response.failedShards,
+                            Arrays.asList(*response.shardFailures))
+                })
+
+        init {
+            declareBroadcastFields(PARSER)
         }
-        val PARSER: ConstructingObjectParser<RefreshSynonymAnalyzerResponse, Void> = ConstructingObjectParser<RefreshSynonymAnalyzerResponse, Void>("refresh_synonym_analyzer", true, lmbda)
+
+        fun fromXContent(parser: XContentParser?): RefreshSynonymAnalyzerResponse? {
+            return PARSER.apply(parser, null)
+        }
     }
 }
-
-//{ arg -> {
-//    val response: BroadcastResponse = arg[0]
-//    return RefreshSynonymAnalyzerResponse(response.getTotalShards(), response.getSuccessfulShards(), response.getFailedShards(), Arrays.asList(response.getShardFailures()))
-//}}

@@ -13,9 +13,8 @@
  * permissions and limitations under the License.
  */
 
-package com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action
+package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.RefreshSynonymAnalyzerResponse
 import org.elasticsearch.action.ActionType
 import org.elasticsearch.common.io.stream.Writeable
 
@@ -26,5 +25,5 @@ class RefreshSynonymAnalyzerAction : ActionType<RefreshSynonymAnalyzerResponse>(
         val reader = Writeable.Reader { RefreshSynonymAnalyzerResponse() }
     }
 
-    //override fun getResponseReader(): Writeable.Reader<RefreshSynonymAnalyzerResponse> = reader
+    override fun getResponseReader(): Writeable.Reader<RefreshSynonymAnalyzerResponse> = reader
 }

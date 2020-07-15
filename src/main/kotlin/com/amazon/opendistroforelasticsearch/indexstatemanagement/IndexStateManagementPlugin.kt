@@ -19,6 +19,9 @@ import com.amazon.opendistroforelasticsearch.indexstatemanagement.transport.acti
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.transport.action.updateindexmetadata.UpdateManagedIndexMetaDataAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.RefreshSynonymAnalyzerAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.RestRefreshSynonymAnalyzerAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.TransportRefreshSynonymAnalyzerAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestAddPolicyAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestChangePolicyAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestDeletePolicyAction
@@ -119,6 +122,7 @@ internal class IndexStateManagementPlugin : JobSchedulerExtension, ActionPlugin,
         nodesInCluster: Supplier<DiscoveryNodes>
     ): List<RestHandler> {
         return listOf(
+            RestRefreshSynonymAnalyzerAction(),
             RestIndexPolicyAction(settings, clusterService, indexStateManagementIndices),
             RestGetPolicyAction(),
             RestDeletePolicyAction(),
@@ -186,6 +190,10 @@ internal class IndexStateManagementPlugin : JobSchedulerExtension, ActionPlugin,
             ActionPlugin.ActionHandler(
                 UpdateManagedIndexMetaDataAction.INSTANCE,
                 TransportUpdateManagedIndexMetaDataAction::class.java
+            ),
+            ActionPlugin.ActionHandler(
+                RefreshSynonymAnalyzerAction.INSTANCE,
+                TransportRefreshSynonymAnalyzerAction::class.java
             )
         )
     }
