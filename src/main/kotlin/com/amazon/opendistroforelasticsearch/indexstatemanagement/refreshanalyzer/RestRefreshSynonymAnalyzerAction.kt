@@ -68,10 +68,10 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
             throw IllegalArgumentException("Missing indices")
         }
 
-        val refreshSynonymAnalyzerRequest : RefreshSynonymAnalyzerRequest = RefreshSynonymAnalyzerRequest()
+        val refreshSynonymAnalyzerRequest: RefreshSynonymAnalyzerRequest = RefreshSynonymAnalyzerRequest()
                 .indices(*indices)
 
-        return RestChannelConsumer {channel ->
+        return RestChannelConsumer { channel ->
             client.execute(RefreshSynonymAnalyzerAction.INSTANCE, refreshSynonymAnalyzerRequest, RestToXContentListener(channel))
         }
     }
@@ -170,4 +170,3 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
         const val ADD_POLICY_TIMEOUT_IN_MILLIS = 30000L
     }
 }
-

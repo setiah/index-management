@@ -12,14 +12,15 @@ import java.util.function.Function
 class RefreshSynonymAnalyzerResponse : BroadcastResponse {
 
     @Throws(IOException::class)
-    constructor(inp: StreamInput?): super(inp)
+    constructor(inp: StreamInput?) : super(inp)
 
-    constructor(totalShards: Int,
-                successfulShards: Int,
-                failedShards: Int,
-                shardFailures: List<DefaultShardOperationFailedException>
-    ): super(
-            totalShards, successfulShards, failedShards, shardFailures
+    constructor(
+        totalShards: Int,
+        successfulShards: Int,
+        failedShards: Int,
+        shardFailures: List<DefaultShardOperationFailedException>
+    ) : super(
+        totalShards, successfulShards, failedShards, shardFailures
     )
 
     companion object {
