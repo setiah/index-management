@@ -24,14 +24,6 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
     )
 
     companion object {
-//        private val PARSER: ConstructingObjectParser<RefreshSynonymAnalyzerResponse, Void> =
-//        ConstructingObjectParser("refresh_synonym_analyzer", true) {
-//            arg: Array<Any> ->
-//            val response: BroadcastResponse = (arg as List<BroadcastResponse>)[0]
-//            RefreshSynonymAnalyzerResponse(response.getTotalShards(), response.getSuccessfulShards(),
-//            response.getFailedShards(), response.getShardFailures().toList())
-//        }
-
         private val PARSER = ConstructingObjectParser<RefreshSynonymAnalyzerResponse, Void>("refresh_synonym_analyzer", true,
                 Function { arg: Array<Any> ->
                     val response = arg[0] as BroadcastResponse
@@ -43,8 +35,8 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
             declareBroadcastFields(PARSER)
         }
 
-        fun fromXContent(parser: XContentParser?): RefreshSynonymAnalyzerResponse? {
-            return PARSER.apply(parser, null)
-        }
+//        fun fromXContent(parser: XContentParser?): RefreshSynonymAnalyzerResponse? {
+//            return PARSER.apply(parser, null)
+//        }
     }
 }

@@ -59,8 +59,10 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
         )
     }
 
+    // TODO: Add indicesOptions?
+
     @Throws(IOException::class)
-    @Suppress("SpreadOperator") // There is no way around dealing with java vararg without spread operator.
+    @Suppress("SpreadOperator")
     override fun prepareRequest(request: RestRequest, client: NodeClient): RestChannelConsumer {
         val indices: Array<String>? = Strings.splitStringByCommaToArray(request.param("index"))
 

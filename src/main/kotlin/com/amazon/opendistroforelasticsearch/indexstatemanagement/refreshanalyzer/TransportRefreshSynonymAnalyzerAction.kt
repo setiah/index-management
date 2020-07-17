@@ -35,13 +35,13 @@ class TransportRefreshSynonymAnalyzerAction :
         analysisRegistry: AnalysisRegistry,
         indexNameExpressionResolver: IndexNameExpressionResolver?
     ) : super(
-        "reload",
+        RefreshSynonymAnalyzerAction.INSTANCE.name(),
         clusterService,
         transportService,
         actionFilters,
         indexNameExpressionResolver,
         Writeable.Reader { RefreshSynonymAnalyzerRequest() },
-        ThreadPool.Names.MANAGEMENT
+        ThreadPool.Names.MANAGEMENT     // TODO(setiah): check if same threadpool needs to be used
     ) {
         this.analysisRegistry = analysisRegistry
         this.indicesService = indicesService
@@ -75,10 +75,7 @@ class TransportRefreshSynonymAnalyzerAction :
     @Throws(IOException::class)
     override fun shardOperation(request: RefreshSynonymAnalyzerRequest?, shardRouting: ShardRouting): EmptyResult? {
         val indexShard: IndexShard = indicesService.indexServiceSafe(shardRouting.shardId().index).getShard(shardRouting.shardId().id())
-        // TODO: Write code here
-        logger.info("Himanshu: refreshing search analyzers " + indexShard.shardId().toString())
         indexShard.mapperService().reloadSearchAnalyzers(analysisRegistry)
-        // indexShard.mapperService().getIndexAnalyzers();
         return EmptyResult.INSTANCE
     }
 
@@ -89,6 +86,8 @@ class TransportRefreshSynonymAnalyzerAction :
         return clusterState.routingTable().allShards(concreteIndices)
     }
 
+    // TODO(setiah): Check if needed to block refresh when cluster has metadata write block
+    // Why it should be ok? - Indices cache cannot be cleared when there is a metadata write block. Similar to that.
     override fun checkGlobalBlock(state: ClusterState, request: RefreshSynonymAnalyzerRequest?): ClusterBlockException? {
         return state.blocks().globalBlockedException(ClusterBlockLevel.METADATA_WRITE)
     }
