@@ -55,7 +55,7 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
 
     override fun routes(): List<Route> {
         return listOf(
-                Route(POST, "/{index}/_refresh_synonym_analyzer")
+                Route(POST, REFRESH_SYNONYM_ANALYZER_URI)
         )
     }
 
@@ -76,5 +76,9 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
         return RestChannelConsumer { channel ->
             client.execute(RefreshSynonymAnalyzerAction.INSTANCE, refreshSynonymAnalyzerRequest, RestToXContentListener(channel))
         }
+    }
+
+    companion object {
+        const val REFRESH_SYNONYM_ANALYZER_URI = "/{index}/_refresh_synonym_analyzer"
     }
 }

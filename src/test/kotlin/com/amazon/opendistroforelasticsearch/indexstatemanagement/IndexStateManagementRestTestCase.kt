@@ -76,13 +76,11 @@ import javax.management.ObjectName
 import javax.management.remote.JMXConnectorFactory
 import javax.management.remote.JMXServiceURL
 
-abstract class IndexStateManagementRestTestCase : ESRestTestCase() {
+abstract class IndexStateManagementRestTestCase : IndexManagementRestTestCase() {
 
     private val isDebuggingTest = DisableOnDebug(null).isDebugging
     private val isDebuggingRemoteCluster = System.getProperty("cluster.debug", "false")!!.toBoolean()
     private val isMultiNode = System.getProperty("cluster.number_of_nodes", "1").toInt() > 1
-
-    fun Response.asMap(): Map<String, Any> = entityAsMap(this)
 
     protected fun createPolicy(
         policy: Policy,
@@ -325,8 +323,6 @@ abstract class IndexStateManagementRestTestCase : ESRestTestCase() {
             ))
         assertEquals("Request failed", RestStatus.OK, response.restStatus())
     }
-
-    protected fun Response.restStatus(): RestStatus = RestStatus.fromCode(this.statusLine.statusCode)
 
     protected fun Policy.toHttpEntity(): HttpEntity = StringEntity(toJsonString(), APPLICATION_JSON)
 
