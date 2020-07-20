@@ -3,7 +3,6 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyz
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
 import org.elasticsearch.client.ResponseException
-import org.elasticsearch.test.rest.ESRestTestCase
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus
 

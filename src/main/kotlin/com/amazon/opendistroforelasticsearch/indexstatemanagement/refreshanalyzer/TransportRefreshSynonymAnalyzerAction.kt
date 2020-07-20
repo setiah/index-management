@@ -86,6 +86,7 @@ class TransportRefreshSynonymAnalyzerAction :
         return clusterState.routingTable().allShards(concreteIndices)
     }
 
+    // TODO(setiah): Check if md5 content validation possible on nodes
     // TODO(setiah): Check if needed to block refresh when cluster has metadata write block
     // Why it should be ok? - Indices cache cannot be cleared when there is a metadata write block. Similar to that.
     override fun checkGlobalBlock(state: ClusterState, request: RefreshSynonymAnalyzerRequest?): ClusterBlockException? {
