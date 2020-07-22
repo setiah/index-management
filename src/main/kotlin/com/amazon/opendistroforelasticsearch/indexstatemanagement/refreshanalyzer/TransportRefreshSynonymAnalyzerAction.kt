@@ -35,13 +35,13 @@ class TransportRefreshSynonymAnalyzerAction :
         analysisRegistry: AnalysisRegistry,
         indexNameExpressionResolver: IndexNameExpressionResolver?
     ) : super(
-        RefreshSynonymAnalyzerAction.INSTANCE.name(),
+        RefreshSynonymAnalyzerAction.NAME,
         clusterService,
         transportService,
         actionFilters,
         indexNameExpressionResolver,
         Writeable.Reader { RefreshSynonymAnalyzerRequest() },
-        ThreadPool.Names.MANAGEMENT     // TODO(setiah): check if same threadpool needs to be used
+        ThreadPool.Names.MANAGEMENT     // TODO(setiah): check if same thread pool needs to be used
     ) {
         this.analysisRegistry = analysisRegistry
         this.indicesService = indicesService
@@ -75,6 +75,7 @@ class TransportRefreshSynonymAnalyzerAction :
     @Throws(IOException::class)
     override fun shardOperation(request: RefreshSynonymAnalyzerRequest?, shardRouting: ShardRouting): EmptyResult? {
         val indexShard: IndexShard = indicesService.indexServiceSafe(shardRouting.shardId().index).getShard(shardRouting.shardId().id())
+        logger.info("Plugin reloading search analyzers")
         indexShard.mapperService().reloadSearchAnalyzers(analysisRegistry)
         return EmptyResult.INSTANCE
     }

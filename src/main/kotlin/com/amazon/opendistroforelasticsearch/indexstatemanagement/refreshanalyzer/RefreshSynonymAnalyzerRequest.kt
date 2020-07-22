@@ -9,7 +9,7 @@ class RefreshSynonymAnalyzerRequest : BroadcastRequest<RefreshSynonymAnalyzerReq
 
     @Throws(IOException::class)
     constructor(inp: StreamInput) : super(inp) {
-        indices = inp.readStringArray()
+        // indices = inp.readStringArray()
         // indicesOptions = IndicesOptions.readIndicesOptions(inp)
     }
 }
