@@ -2,10 +2,13 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyz
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
+import org.elasticsearch.client.Request
 import org.elasticsearch.client.ResponseException
 import org.elasticsearch.common.settings.Settings
+import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus
+import org.junit.Assert
 import java.io.File
 
 class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
@@ -51,6 +54,8 @@ class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
         // https://www.programiz.com/kotlin-programming/examples/current-working-directory
         val path = System.getProperty("user.dir")
         println("Working Directory = $path")
+        // path = /Users/setiah/projects/odfe/index-management/build/testrun/integTestRunner
+
         val fileName = "synonyms.txt"
         var file = File(fileName)
         // create a new file
@@ -60,16 +65,48 @@ class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
 
     fun `test search time analyzer`() {
         val indexName = "testindex"
-//        val settings = Settings.builder()
-//                .put("index.number_of_shards", 1)
-//                .put("index.number_of_replicas", 0)
-//                .put("index.analysis.analyzer.my_synonyms.tokenizer", "whitespace")
-//                .putList("index.analysis.analyzer.my_synonyms.filter", listOf("synonym"))
-//                .put("index.analysis.analyzer.filter.synonym.type", "synonym_graph")
-//                .putList("index.analysis.analyzer.filter.synonym.synonyms", listOf("hello, hola"))
-//                .build()
+        // TODO: change path logic
+        val fileName = "/Users/setiah/projects/odfe/index-management/build/testclusters/integTest-0/config/pacman_synonyms.txt"
+        var file = File(fileName)
+        file.writeText("hello, hola")   // create a new file
+        val source: String = """
+            {
+                "index" : {
+                    "analysis" : {
+                        "analyzer" : {
+                            "my_synonyms" : {
+                                "tokenizer" : "whitespace",
+                                "filter" : ["synonym"]
+                            }
+                        },
+                        "filter" : {
+                            "synonym" : {
+                                "type" : "synonym_graph",
+                                "synonyms_path" : "pacman_synonyms.txt", 
+                                "updateable" : true 
+                            }
+                        }
+                    }
+                }
+            }
+        """.trimIndent()
 
-        createIndex(indexName, settings)
+        val settings: Settings = Settings.builder().loadFromSource(source, XContentType.JSON).build()
+        val mappings: String = """
+            "properties": {
+                    "title": {
+                        "type": "text",
+                        "analyzer" : "standard",
+                        "search_analyzer": "my_synonyms"
+                    }
+                }
+        """.trimIndent()
+
+        // val mappings: String = "\"properties\":{\"title\":{\"type\": \"text\",\"analyzer\" : \"standard\",\"search_analyzer\": \"my_synonyms\"}}"
+        createIndex(indexName, settings, mappings)
+        ingestData(indexName)
+        queryData(indexName, "hello")
+        fail("check")
     }
 
     fun `test multiple search analyzers`() {
@@ -78,5 +115,24 @@ class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
 
     fun `test index alias`() {
 
+    }
+
+    companion object {
+        fun ingestData(indexName: String) {
+            val request = Request("POST", "/$indexName/_doc")
+            val data: String = """
+                {
+                  "title": "hello world..."
+                }
+            """.trimIndent()
+            request.setJsonEntity(data)
+            client().performRequest(request)
+        }
+
+        fun queryData(indexName: String, query: String) {
+            val request = Request("GET", "/$indexName/_search?q=$query")
+            val result = client().performRequest(request)
+            println(result.entity)
+        }
     }
 }
