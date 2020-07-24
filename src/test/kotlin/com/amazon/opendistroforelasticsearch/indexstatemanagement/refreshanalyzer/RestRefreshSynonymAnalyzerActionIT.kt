@@ -3,13 +3,15 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyz
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
 import org.elasticsearch.client.Request
+import org.elasticsearch.client.Response
 import org.elasticsearch.client.ResponseException
+import org.elasticsearch.common.io.Streams
 import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus
-import org.junit.Assert
 import java.io.File
+import java.io.InputStreamReader
 
 class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
 
@@ -105,8 +107,30 @@ class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
         // val mappings: String = "\"properties\":{\"title\":{\"type\": \"text\",\"analyzer\" : \"standard\",\"search_analyzer\": \"my_synonyms\"}}"
         createIndex(indexName, settings, mappings)
         ingestData(indexName)
-        queryData(indexName, "hello")
-        fail("check")
+        Thread.sleep(1000)
+
+        val result1 = queryData(indexName, "hello")
+        assertTrue(result1.contains("hello world"))
+
+        // check synonym
+        val result2 = queryData(indexName, "hola")
+        assertTrue(result2.contains("hello world"))
+
+        // check non synonym
+        val result3 = queryData(indexName, "namaste")
+        assertFalse(result3.contains("hello world"))
+
+        file.writeText("hello, hola, namaste")   // Append to file
+
+        // check new added synonym before refreshing analyzers
+        val result4 = queryData(indexName, "namaste")
+        assertFalse(result4.contains("hello world"))
+
+        Thread.sleep(1000)
+
+        // check new added synonym after refreshing analyzers
+        val result5 = queryData(indexName, "namaste")
+        assertFalse(result5.contains("hello world"))
     }
 
     fun `test multiple search analyzers`() {
@@ -126,13 +150,18 @@ class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
                 }
             """.trimIndent()
             request.setJsonEntity(data)
-            client().performRequest(request)
+            val response: Response = client().performRequest(request)
         }
 
-        fun queryData(indexName: String, query: String) {
+        fun queryData(indexName: String, query: String): String {
             val request = Request("GET", "/$indexName/_search?q=$query")
-            val result = client().performRequest(request)
-            println(result.entity)
+            val response = client().performRequest(request)
+            return Streams.copyToString(InputStreamReader(response.entity.content))
+        }
+
+        fun refreshAnalyzer(indexName: String) {
+            val request = Request("POST", "/$indexName/_refresh_synonym_analyzer")
+            client().performRequest(request)
         }
     }
 }
