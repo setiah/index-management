@@ -458,7 +458,7 @@ abstract class IndexStateManagementRestTestCase : IndexManagementRestTestCase() 
         assertEquals("Unable to create a new repository", RestStatus.OK, response.restStatus())
     }
 
-    private fun getRepoPath(): String = System.getProperty("tests.path.repo")
+    // private fun getRepoPath(): String = System.getProperty("tests.path.repo")
 
     private fun getSnapshotsList(repository: String): List<Any> {
         val response = client()
