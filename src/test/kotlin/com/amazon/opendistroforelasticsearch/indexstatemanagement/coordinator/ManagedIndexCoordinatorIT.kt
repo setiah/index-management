@@ -18,16 +18,16 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.coordinator
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementPlugin.Companion.INDEX_STATE_MANAGEMENT_INDEX
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Transition
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.DeleteActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ForceMergeActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.RolloverActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Transition
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.DeleteActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ForceMergeActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.RolloverActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomErrorNotification
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.common.xcontent.XContentType
@@ -136,13 +136,13 @@ class ManagedIndexCoordinatorIT : IndexStateManagementRestTestCase() {
         val rolloverActionConfig = RolloverActionConfig(index = 0, minDocs = 5, minAge = null, minSize = null)
         val states = listOf(State(name = "RolloverState", actions = listOf(rolloverActionConfig), transitions = listOf()))
         val policy = Policy(
-            id = policyID,
-            description = "$policyID description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$policyID description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)
@@ -216,22 +216,22 @@ class ManagedIndexCoordinatorIT : IndexStateManagementRestTestCase() {
         val forceMergeActionConfig = ForceMergeActionConfig(index = 0, maxNumSegments = 1)
         val deleteActionConfig = DeleteActionConfig(index = 0)
         val states = listOf(
-            State(
-                name = "ForceMergeState",
-                actions = listOf(forceMergeActionConfig),
-                transitions = listOf(Transition(stateName = "DeleteState", conditions = null))
-            ),
-            State(name = "DeleteState", actions = listOf(deleteActionConfig), transitions = listOf())
+                State(
+                        name = "ForceMergeState",
+                        actions = listOf(forceMergeActionConfig),
+                        transitions = listOf(Transition(stateName = "DeleteState", conditions = null))
+                ),
+                State(name = "DeleteState", actions = listOf(deleteActionConfig), transitions = listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$policyID description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$policyID description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)

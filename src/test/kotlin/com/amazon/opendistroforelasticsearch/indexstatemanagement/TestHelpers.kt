@@ -15,32 +15,32 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.elasticapi.string
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ChangePolicy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Conditions
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ErrorNotification
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.StateFilter
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Transition
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.DeleteActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ForceMergeActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.NotificationActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ReadOnlyActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ReadWriteActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ReplicaCountActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.IndexPriorityActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.RolloverActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.SnapshotActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.coordinator.ClusterStateManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.coordinator.SweptManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.Chime
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.CustomWebhook
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.Destination
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.DestinationType
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.Slack
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.elasticapi.string
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ChangePolicy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Conditions
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ErrorNotification
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.StateFilter
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Transition
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.DeleteActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ForceMergeActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.NotificationActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ReadOnlyActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ReadWriteActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ReplicaCountActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.IndexPriorityActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.RolloverActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.SnapshotActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.coordinator.ClusterStateManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.coordinator.SweptManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.Chime
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.CustomWebhook
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.Destination
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.DestinationType
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.Slack
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.CronSchedule
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.IntervalSchedule
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.Schedule
@@ -63,21 +63,21 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 fun randomPolicy(
-    id: String = ESRestTestCase.randomAlphaOfLength(10),
-    description: String = ESRestTestCase.randomAlphaOfLength(10),
-    schemaVersion: Long = ESRestTestCase.randomLong(),
-    lastUpdatedTime: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-    errorNotification: ErrorNotification? = randomErrorNotification(),
-    states: List<State> = List(ESRestTestCase.randomIntBetween(1, 10)) { randomState() }
+        id: String = ESRestTestCase.randomAlphaOfLength(10),
+        description: String = ESRestTestCase.randomAlphaOfLength(10),
+        schemaVersion: Long = ESRestTestCase.randomLong(),
+        lastUpdatedTime: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+        errorNotification: ErrorNotification? = randomErrorNotification(),
+        states: List<State> = List(ESRestTestCase.randomIntBetween(1, 10)) { randomState() }
 ): Policy {
     return Policy(id = id, schemaVersion = schemaVersion, lastUpdatedTime = lastUpdatedTime,
             errorNotification = errorNotification, defaultState = states[0].name, states = states, description = description)
 }
 
 fun randomState(
-    name: String = ESRestTestCase.randomAlphaOfLength(10),
-    actions: List<ActionConfig> = listOf(),
-    transitions: List<Transition> = listOf()
+        name: String = ESRestTestCase.randomAlphaOfLength(10),
+        actions: List<ActionConfig> = listOf(),
+        transitions: List<Transition> = listOf()
 ): State {
     return State(name = name, actions = actions, transitions = transitions)
 }
@@ -127,10 +127,10 @@ fun randomRolloverActionConfig(
     minAge: TimeValue = randomTimeValueObject()
 ): RolloverActionConfig {
     return RolloverActionConfig(
-        minSize = minSize,
-        minDocs = minDocs,
-        minAge = minAge,
-        index = 0
+            minSize = minSize,
+            minDocs = minDocs,
+            minAge = minAge,
+            index = 0
     )
 }
 
@@ -157,19 +157,19 @@ fun randomForceMergeActionConfig(
 }
 
 fun randomNotificationActionConfig(
-    destination: Destination = randomDestination(),
-    messageTemplate: Script = randomTemplateScript("random message"),
-    index: Int = 0
+        destination: Destination = randomDestination(),
+        messageTemplate: Script = randomTemplateScript("random message"),
+        index: Int = 0
 ): NotificationActionConfig {
     return NotificationActionConfig(destination, messageTemplate, index)
 }
 
 fun randomDestination(type: DestinationType = randomDestinationType()): Destination {
     return Destination(
-        type = type,
-        chime = if (type == DestinationType.CHIME) randomChime() else null,
-        slack = if (type == DestinationType.SLACK) randomSlack() else null,
-        customWebhook = if (type == DestinationType.CUSTOM_WEBHOOK) randomCustomWebhook() else null
+            type = type,
+            chime = if (type == DestinationType.CHIME) randomChime() else null,
+            slack = if (type == DestinationType.SLACK) randomSlack() else null,
+            customWebhook = if (type == DestinationType.CUSTOM_WEBHOOK) randomCustomWebhook() else null
     )
 }
 
@@ -188,15 +188,15 @@ fun randomSlack(): Slack {
 
 fun randomCustomWebhook(): CustomWebhook {
     return CustomWebhook(
-        url = "https://www.amazon.com",
-        scheme = null,
-        host = null,
-        port = -1,
-        path = null,
-        queryParams = emptyMap(),
-        headerParams = emptyMap(),
-        username = null,
-        password = null
+            url = "https://www.amazon.com",
+            scheme = null,
+            host = null,
+            port = -1,
+            path = null,
+            queryParams = emptyMap(),
+            headerParams = emptyMap(),
+            username = null,
+            password = null
     )
 }
 
@@ -233,10 +233,10 @@ fun randomByteSizeValue() =
  */
 
 fun randomChangePolicy(
-    policyID: String = ESRestTestCase.randomAlphaOfLength(10),
-    state: String? = if (ESRestTestCase.randomBoolean()) ESRestTestCase.randomAlphaOfLength(10) else null,
-    include: List<StateFilter> = emptyList(),
-    isSafe: Boolean = false
+        policyID: String = ESRestTestCase.randomAlphaOfLength(10),
+        state: String? = if (ESRestTestCase.randomBoolean()) ESRestTestCase.randomAlphaOfLength(10) else null,
+        include: List<StateFilter> = emptyList(),
+        isSafe: Boolean = false
 ): ChangePolicy {
     return ChangePolicy(policyID, state, include, isSafe)
 }
@@ -245,30 +245,30 @@ fun randomChangePolicy(
 fun randomErrorNotification(): ErrorNotification? = null
 
 fun randomManagedIndexConfig(
-    name: String = ESRestTestCase.randomAlphaOfLength(10),
-    index: String = ESRestTestCase.randomAlphaOfLength(10),
-    uuid: String = ESRestTestCase.randomAlphaOfLength(20),
-    enabled: Boolean = ESRestTestCase.randomBoolean(),
-    schedule: Schedule = IntervalSchedule(Instant.ofEpochMilli(Instant.now().toEpochMilli()), 5, ChronoUnit.MINUTES),
-    lastUpdatedTime: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-    enabledTime: Instant? = if (enabled) Instant.now().truncatedTo(ChronoUnit.MILLIS) else null,
-    policyID: String = ESRestTestCase.randomAlphaOfLength(10),
-    policy: Policy? = randomPolicy(),
-    changePolicy: ChangePolicy? = randomChangePolicy()
+        name: String = ESRestTestCase.randomAlphaOfLength(10),
+        index: String = ESRestTestCase.randomAlphaOfLength(10),
+        uuid: String = ESRestTestCase.randomAlphaOfLength(20),
+        enabled: Boolean = ESRestTestCase.randomBoolean(),
+        schedule: Schedule = IntervalSchedule(Instant.ofEpochMilli(Instant.now().toEpochMilli()), 5, ChronoUnit.MINUTES),
+        lastUpdatedTime: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+        enabledTime: Instant? = if (enabled) Instant.now().truncatedTo(ChronoUnit.MILLIS) else null,
+        policyID: String = ESRestTestCase.randomAlphaOfLength(10),
+        policy: Policy? = randomPolicy(),
+        changePolicy: ChangePolicy? = randomChangePolicy()
 ): ManagedIndexConfig {
     return ManagedIndexConfig(
-        jobName = name,
-        index = index,
-        indexUuid = uuid,
-        enabled = enabled,
-        jobSchedule = schedule,
-        jobLastUpdatedTime = lastUpdatedTime,
-        jobEnabledTime = enabledTime,
-        policyID = policy?.id ?: policyID,
-        policySeqNo = policy?.seqNo,
-        policyPrimaryTerm = policy?.primaryTerm,
-        policy = policy?.copy(id = ManagedIndexConfig.NO_ID, seqNo = SequenceNumbers.UNASSIGNED_SEQ_NO, primaryTerm = SequenceNumbers.UNASSIGNED_PRIMARY_TERM),
-        changePolicy = changePolicy
+            jobName = name,
+            index = index,
+            indexUuid = uuid,
+            enabled = enabled,
+            jobSchedule = schedule,
+            jobLastUpdatedTime = lastUpdatedTime,
+            jobEnabledTime = enabledTime,
+            policyID = policy?.id ?: policyID,
+            policySeqNo = policy?.seqNo,
+            policyPrimaryTerm = policy?.primaryTerm,
+            policy = policy?.copy(id = ManagedIndexConfig.NO_ID, seqNo = SequenceNumbers.UNASSIGNED_SEQ_NO, primaryTerm = SequenceNumbers.UNASSIGNED_PRIMARY_TERM),
+            changePolicy = changePolicy
     )
 }
 
@@ -280,31 +280,31 @@ fun randomClusterStateManagedIndexConfig(
     primaryTerm: Long = SequenceNumbers.UNASSIGNED_PRIMARY_TERM
 ): ClusterStateManagedIndexConfig {
     return ClusterStateManagedIndexConfig(
-        index = index,
-        uuid = uuid,
-        policyID = policyID,
-        seqNo = seqNo,
-        primaryTerm = primaryTerm
+            index = index,
+            uuid = uuid,
+            policyID = policyID,
+            seqNo = seqNo,
+            primaryTerm = primaryTerm
     )
 }
 
 fun randomSweptManagedIndexConfig(
-    index: String = ESRestTestCase.randomAlphaOfLength(10),
-    uuid: String = ESRestTestCase.randomAlphaOfLength(20),
-    policyID: String = ESRestTestCase.randomAlphaOfLength(10),
-    seqNo: Long = SequenceNumbers.UNASSIGNED_SEQ_NO,
-    primaryTerm: Long = SequenceNumbers.UNASSIGNED_PRIMARY_TERM,
-    changePolicy: ChangePolicy? = null,
-    policy: Policy? = null
+        index: String = ESRestTestCase.randomAlphaOfLength(10),
+        uuid: String = ESRestTestCase.randomAlphaOfLength(20),
+        policyID: String = ESRestTestCase.randomAlphaOfLength(10),
+        seqNo: Long = SequenceNumbers.UNASSIGNED_SEQ_NO,
+        primaryTerm: Long = SequenceNumbers.UNASSIGNED_PRIMARY_TERM,
+        changePolicy: ChangePolicy? = null,
+        policy: Policy? = null
 ): SweptManagedIndexConfig {
     return SweptManagedIndexConfig(
-        index = index,
-        uuid = uuid,
-        policyID = policyID,
-        seqNo = seqNo,
-        primaryTerm = primaryTerm,
-        policy = policy,
-        changePolicy = changePolicy
+            index = index,
+            uuid = uuid,
+            policyID = policyID,
+            seqNo = seqNo,
+            primaryTerm = primaryTerm,
+            policy = policy,
+            changePolicy = changePolicy
     )
 }
 

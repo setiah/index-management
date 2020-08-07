@@ -15,39 +15,14 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementPlugin.Companion.ISM_BASE_URI
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.elasticapi.getPolicyID
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FailedIndex
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.UPDATED_INDICES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.buildInvalidIndexResponse
-import org.elasticsearch.ElasticsearchTimeoutException
-import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse
-import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsAction
-import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsRequest
-import org.elasticsearch.action.support.master.AcknowledgedResponse
 import org.elasticsearch.client.node.NodeClient
-import org.elasticsearch.cluster.ClusterState
-import org.elasticsearch.cluster.block.ClusterBlockException
-import org.elasticsearch.cluster.metadata.IndexMetadata
 import org.elasticsearch.common.Strings
-import org.elasticsearch.common.settings.Settings
-import org.elasticsearch.common.unit.TimeValue
-import org.elasticsearch.index.Index
 import org.elasticsearch.rest.BaseRestHandler
 import org.elasticsearch.rest.RestHandler.Route
-import org.elasticsearch.rest.BytesRestResponse
-import org.elasticsearch.rest.RestChannel
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestRequest.Method.POST
-import org.elasticsearch.rest.RestResponse
-import org.elasticsearch.rest.RestStatus
-import org.elasticsearch.rest.action.RestActionListener
-import org.elasticsearch.rest.action.RestResponseListener
 import org.elasticsearch.rest.action.RestToXContentListener
 import java.io.IOException
-import java.time.Duration
-import java.time.Instant
 
 class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
 

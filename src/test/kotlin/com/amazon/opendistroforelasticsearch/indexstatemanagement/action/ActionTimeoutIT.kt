@@ -16,9 +16,9 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionMetaData
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import org.hamcrest.collection.IsMapContaining
 import java.time.Instant
@@ -69,7 +69,7 @@ class ActionTimeoutIT : IndexStateManagementRestTestCase() {
             assertPredicatesOnMetaData(
                 listOf(indexName to listOf(ActionMetaData.ACTION to fun(actionMetaDataMap: Any?): Boolean =
                     assertActionEquals(ActionMetaData(name = ActionConfig.ActionType.ROLLOVER.type, startTime = Instant.now().toEpochMilli(), index = 0,
-                        failed = true, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap))),
+                            failed = true, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap))),
                 getExplainMap(indexName),
                 strict = false
             )

@@ -15,22 +15,26 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.transport.action.updateindexmetadata.TransportUpdateManagedIndexMetaDataAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.transport.action.updateindexmetadata.UpdateManagedIndexMetaDataAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.IndexStateManagementHistory
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.IndexStateManagementIndices
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.ManagedIndexCoordinator
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.ManagedIndexRunner
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.transport.action.updateindexmetadata.TransportUpdateManagedIndexMetaDataAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.transport.action.updateindexmetadata.UpdateManagedIndexMetaDataAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.RefreshSynonymAnalyzerAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.RestRefreshSynonymAnalyzerAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer.TransportRefreshSynonymAnalyzerAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestAddPolicyAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestChangePolicyAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestDeletePolicyAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestExplainAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestGetPolicyAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestIndexPolicyAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestRemovePolicyAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestRetryFailedManagedIndexAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestAddPolicyAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestChangePolicyAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestDeletePolicyAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestExplainAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestGetPolicyAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestIndexPolicyAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestRemovePolicyAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestRetryFailedManagedIndexAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.JobSchedulerExtension
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobParser
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.ScheduledJobRunner
@@ -123,14 +127,14 @@ internal class IndexStateManagementPlugin : JobSchedulerExtension, ActionPlugin,
     ): List<RestHandler> {
         return listOf(
             RestRefreshSynonymAnalyzerAction(),
-            RestIndexPolicyAction(settings, clusterService, indexStateManagementIndices),
-            RestGetPolicyAction(),
-            RestDeletePolicyAction(),
-            RestExplainAction(),
-            RestRetryFailedManagedIndexAction(),
-            RestAddPolicyAction(),
-            RestRemovePolicyAction(),
-            RestChangePolicyAction(clusterService)
+                RestIndexPolicyAction(settings, clusterService, indexStateManagementIndices),
+                RestGetPolicyAction(),
+                RestDeletePolicyAction(),
+                RestExplainAction(),
+                RestRetryFailedManagedIndexAction(),
+                RestAddPolicyAction(),
+                RestRemovePolicyAction(),
+                RestChangePolicyAction(clusterService)
         )
     }
 
@@ -159,7 +163,7 @@ internal class IndexStateManagementPlugin : JobSchedulerExtension, ActionPlugin,
 
         indexStateManagementIndices = IndexStateManagementIndices(client.admin().indices(), clusterService)
         val indexStateManagementHistory =
-            IndexStateManagementHistory(settings, client, threadPool, clusterService, indexStateManagementIndices)
+                IndexStateManagementHistory(settings, client, threadPool, clusterService, indexStateManagementIndices)
 
         val managedIndexCoordinator = ManagedIndexCoordinator(environment.settings(),
                 client, clusterService, threadPool, indexStateManagementIndices)

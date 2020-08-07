@@ -16,11 +16,11 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.PolicyRetryInfoMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.StateMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.PolicyRetryInfoMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.StateMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import java.time.Instant
 import java.util.Locale
@@ -59,8 +59,8 @@ class ActionRetryIT : IndexStateManagementRestTestCase() {
         waitFor {
             val managedIndexMetaData = getExplainManagedIndexMetaData(indexName)
             assertEquals(
-                ActionMetaData("rollover", managedIndexMetaData.actionMetaData?.startTime, 0, false, 1,
-                    managedIndexMetaData.actionMetaData?.lastRetryTime, null),
+                    ActionMetaData("rollover", managedIndexMetaData.actionMetaData?.startTime, 0, false, 1,
+                            managedIndexMetaData.actionMetaData?.lastRetryTime, null),
                 managedIndexMetaData.actionMetaData
             )
 
@@ -73,8 +73,8 @@ class ActionRetryIT : IndexStateManagementRestTestCase() {
         waitFor {
             val managedIndexMetaData = getExplainManagedIndexMetaData(indexName)
             assertEquals(
-                ActionMetaData("rollover", managedIndexMetaData.actionMetaData?.startTime, 0, false, 2,
-                    managedIndexMetaData.actionMetaData?.lastRetryTime, null),
+                    ActionMetaData("rollover", managedIndexMetaData.actionMetaData?.startTime, 0, false, 2,
+                            managedIndexMetaData.actionMetaData?.lastRetryTime, null),
                 managedIndexMetaData.actionMetaData
             )
 
@@ -87,8 +87,8 @@ class ActionRetryIT : IndexStateManagementRestTestCase() {
         waitFor {
             val managedIndexMetaData = getExplainManagedIndexMetaData(indexName)
             assertEquals(
-                ActionMetaData("rollover", managedIndexMetaData.actionMetaData?.startTime, 0, true, 2,
-                    managedIndexMetaData.actionMetaData?.lastRetryTime, null),
+                    ActionMetaData("rollover", managedIndexMetaData.actionMetaData?.startTime, 0, true, 2,
+                            managedIndexMetaData.actionMetaData?.lastRetryTime, null),
                 managedIndexMetaData.actionMetaData
             )
 
@@ -150,7 +150,7 @@ class ActionRetryIT : IndexStateManagementRestTestCase() {
                             assertStateEquals(StateMetaData("Ingest", Instant.now().toEpochMilli()), stateMetaDataMap),
                         ActionMetaData.ACTION to fun(actionMetaDataMap: Any?): Boolean =
                             assertActionEquals(
-                                ActionMetaData("rollover", Instant.now().toEpochMilli(), 0, false, 1, null, null),
+                                    ActionMetaData("rollover", Instant.now().toEpochMilli(), 0, false, 1, null, null),
                                 actionMetaDataMap
                             ),
                         PolicyRetryInfoMetaData.RETRY_INFO to fun(retryInfoMetaDataMap: Any?): Boolean =

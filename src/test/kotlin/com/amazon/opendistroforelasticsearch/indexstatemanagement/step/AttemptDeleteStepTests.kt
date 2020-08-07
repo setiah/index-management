@@ -15,9 +15,10 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.step
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.DeleteActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.step.delete.AttemptDeleteStep
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.DeleteActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.step.Step
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.step.delete.AttemptDeleteStep
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn

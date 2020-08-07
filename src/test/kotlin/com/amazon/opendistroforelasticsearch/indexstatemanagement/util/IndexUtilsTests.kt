@@ -1,5 +1,6 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.util
 
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.IndexUtils
 import org.elasticsearch.cluster.metadata.IndexMetadata
 import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.test.ESTestCase

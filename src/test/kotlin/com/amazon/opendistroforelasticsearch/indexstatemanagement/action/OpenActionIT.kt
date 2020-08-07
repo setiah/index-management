@@ -16,9 +16,9 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.OpenActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.OpenActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomErrorNotification
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import java.time.Instant
@@ -34,17 +34,17 @@ class OpenActionIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyName_1"
         val actionConfig = OpenActionConfig(0)
         val states = listOf(
-            State("OpenState", listOf(actionConfig), listOf())
+                State("OpenState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
         createPolicy(policy, policyID)
         createIndex(indexName, policyID)
@@ -71,17 +71,17 @@ class OpenActionIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyName_2"
         val actionConfig = OpenActionConfig(0)
         val states = listOf(
-            State("OpenState", listOf(actionConfig), listOf())
+                State("OpenState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
         createPolicy(policy, policyID)
         createIndex(indexName, policyID)

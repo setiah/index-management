@@ -1,6 +1,6 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.model
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionProperties
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionProperties
 import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.test.ESTestCase
 

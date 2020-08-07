@@ -16,9 +16,9 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.SnapshotActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.SnapshotActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomErrorNotification
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import java.time.Instant
@@ -36,19 +36,19 @@ class SnapshotActionIT : IndexStateManagementRestTestCase() {
         val snapshot = "snapshot"
         val actionConfig = SnapshotActionConfig(repository, snapshot, 0)
         val states = listOf(
-            State("Snapshot", listOf(actionConfig), listOf())
+                State("Snapshot", listOf(actionConfig), listOf())
         )
 
         createRepository(repository)
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
         createPolicy(policy, policyID)
         createIndex(indexName, policyID)

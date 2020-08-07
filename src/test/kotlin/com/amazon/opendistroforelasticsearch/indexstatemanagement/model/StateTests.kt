@@ -15,6 +15,7 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.model
 
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomDeleteActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomReplicaCountActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomState

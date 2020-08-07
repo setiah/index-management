@@ -16,9 +16,9 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.IndexPriorityActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.IndexPriorityActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomErrorNotification
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import java.time.Instant
@@ -35,13 +35,13 @@ class IndexPriorityActionIT : IndexStateManagementRestTestCase() {
         val actionConfig = IndexPriorityActionConfig(50, 0)
         val states = listOf(State(name = "SetPriorityState", actions = listOf(actionConfig), transitions = listOf()))
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)

@@ -16,10 +16,11 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestRemovePolicyAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILED_INDICES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILURES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.UPDATED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILURES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.UPDATED_INDICES
 import org.elasticsearch.client.ResponseException
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus

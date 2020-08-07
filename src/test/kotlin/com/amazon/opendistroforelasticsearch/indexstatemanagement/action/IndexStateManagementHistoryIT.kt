@@ -15,18 +15,18 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementIndices
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.IndexStateManagementIndices
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ReadOnlyActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.PolicyRetryInfoMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.StateMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ReadOnlyActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.PolicyRetryInfoMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.StateMetaData
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomErrorNotification
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import org.elasticsearch.action.search.SearchResponse
 import java.time.Instant
@@ -42,17 +42,17 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyName_1"
         val actionConfig = ReadOnlyActionConfig(0)
         val states = listOf(
-            State("ReadOnlyState", listOf(actionConfig), listOf())
+                State("ReadOnlyState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)
@@ -79,19 +79,19 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val actualHistory = getLatestHistory(historySearchResponse)
 
         val expectedHistory = ManagedIndexMetaData(
-            indexName,
-            getUuid(indexName),
-            policyID,
-            actualHistory.policySeqNo,
-            policyPrimaryTerm = actualHistory.policyPrimaryTerm,
-            policyCompleted = null,
-            rolledOver = null,
-            transitionTo = null,
-            stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
-            actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory.actionMetaData!!.startTime, 0, false, 0, 0, null),
-            stepMetaData = null,
-            policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
-            info = mapOf("message" to "Set index to read-only")
+                indexName,
+                getUuid(indexName),
+                policyID,
+                actualHistory.policySeqNo,
+                policyPrimaryTerm = actualHistory.policyPrimaryTerm,
+                policyCompleted = null,
+                rolledOver = null,
+                transitionTo = null,
+                stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
+                actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory.actionMetaData!!.startTime, 0, false, 0, 0, null),
+                stepMetaData = null,
+                policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
+                info = mapOf("message" to "Set index to read-only")
         )
 
         assertEquals(expectedHistory, actualHistory)
@@ -104,17 +104,17 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyName_2"
         val actionConfig = ReadOnlyActionConfig(0)
         val states = listOf(
-            State("ReadOnlyState", listOf(actionConfig), listOf())
+                State("ReadOnlyState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)
@@ -145,19 +145,19 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val actualHistory = getLatestHistory(historySearchResponse)
 
         val expectedHistory = ManagedIndexMetaData(
-            indexName,
-            getUuid(indexName),
-            policyID,
-            actualHistory.policySeqNo,
-            policyPrimaryTerm = actualHistory.policyPrimaryTerm,
-            policyCompleted = null,
-            rolledOver = null,
-            transitionTo = null,
-            stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
-            actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory.actionMetaData!!.startTime, 0, false, 0, 0, null),
-            stepMetaData = null,
-            policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
-            info = mapOf("message" to "Set index to read-only")
+                indexName,
+                getUuid(indexName),
+                policyID,
+                actualHistory.policySeqNo,
+                policyPrimaryTerm = actualHistory.policyPrimaryTerm,
+                policyCompleted = null,
+                rolledOver = null,
+                transitionTo = null,
+                stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
+                actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory.actionMetaData!!.startTime, 0, false, 0, 0, null),
+                stepMetaData = null,
+                policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
+                info = mapOf("message" to "Set index to read-only")
         )
 
         assertEquals(expectedHistory, actualHistory)
@@ -170,17 +170,17 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyNam_3"
         val actionConfig = ReadOnlyActionConfig(0)
         val states = listOf(
-            State("ReadOnlyState", listOf(actionConfig), listOf())
+                State("ReadOnlyState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)
@@ -211,19 +211,19 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val actualHistory = getLatestHistory(historySearchResponse)
 
         val expectedHistory = ManagedIndexMetaData(
-            indexName,
-            getUuid(indexName),
-            policyID,
-            actualHistory.policySeqNo,
-            policyPrimaryTerm = actualHistory.policyPrimaryTerm,
-            policyCompleted = null,
-            rolledOver = null,
-            transitionTo = null,
-            stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
-            actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory.actionMetaData!!.startTime, 0, false, 0, 0, null),
-            stepMetaData = null,
-            policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
-            info = mapOf("message" to "Set index to read-only")
+                indexName,
+                getUuid(indexName),
+                policyID,
+                actualHistory.policySeqNo,
+                policyPrimaryTerm = actualHistory.policyPrimaryTerm,
+                policyCompleted = null,
+                rolledOver = null,
+                transitionTo = null,
+                stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
+                actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory.actionMetaData!!.startTime, 0, false, 0, 0, null),
+                stepMetaData = null,
+                policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
+                info = mapOf("message" to "Set index to read-only")
         )
 
         assertEquals(expectedHistory, actualHistory)
@@ -236,17 +236,17 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyNam_4"
         val actionConfig = ReadOnlyActionConfig(0)
         val states = listOf(
-            State("ReadOnlyState", listOf(actionConfig), listOf())
+                State("ReadOnlyState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)
@@ -271,19 +271,19 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val actualHistory = getLatestHistory(historySearchResponse)
 
         val expectedHistory = ManagedIndexMetaData(
-            indexName,
-            getUuid(indexName),
-            policyID,
-            actualHistory.policySeqNo,
-            policyPrimaryTerm = actualHistory.policyPrimaryTerm,
-            policyCompleted = null,
-            rolledOver = null,
-            transitionTo = null,
-            stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
-            actionMetaData = null,
-            stepMetaData = null,
-            policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
-            info = mapOf("message" to "Successfully initialized policy: $policyID")
+                indexName,
+                getUuid(indexName),
+                policyID,
+                actualHistory.policySeqNo,
+                policyPrimaryTerm = actualHistory.policyPrimaryTerm,
+                policyCompleted = null,
+                rolledOver = null,
+                transitionTo = null,
+                stateMetaData = StateMetaData("ReadOnlyState", actualHistory.stateMetaData!!.startTime),
+                actionMetaData = null,
+                stepMetaData = null,
+                policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
+                info = mapOf("message" to "Successfully initialized policy: $policyID")
         )
 
         assertEquals(expectedHistory, actualHistory)
@@ -301,19 +301,19 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val actualHistory1 = getLatestHistory(historySearchResponse1)
 
         val expectedHistory1 = ManagedIndexMetaData(
-            indexName,
-            getUuid(indexName),
-            policyID,
-            actualHistory1.policySeqNo,
-            policyPrimaryTerm = actualHistory1.policyPrimaryTerm,
-            policyCompleted = null,
-            rolledOver = null,
-            transitionTo = null,
-            stateMetaData = StateMetaData(states[0].name, actualHistory1.stateMetaData!!.startTime),
-            actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory1.actionMetaData!!.startTime, 0, false, 0, 0, null),
-            stepMetaData = null,
-            policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
-            info = mapOf("message" to "Set index to read-only")
+                indexName,
+                getUuid(indexName),
+                policyID,
+                actualHistory1.policySeqNo,
+                policyPrimaryTerm = actualHistory1.policyPrimaryTerm,
+                policyCompleted = null,
+                rolledOver = null,
+                transitionTo = null,
+                stateMetaData = StateMetaData(states[0].name, actualHistory1.stateMetaData!!.startTime),
+                actionMetaData = ActionMetaData(ActionConfig.ActionType.READ_ONLY.toString(), actualHistory1.actionMetaData!!.startTime, 0, false, 0, 0, null),
+                stepMetaData = null,
+                policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
+                info = mapOf("message" to "Set index to read-only")
         )
 
         assertEquals(expectedHistory1, actualHistory1)
@@ -336,17 +336,17 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val policyID = "${testIndexName}_testPolicyName_5"
         val actionConfig = ReadOnlyActionConfig(0)
         val states = listOf(
-            State("ReadOnlyState", listOf(actionConfig), listOf())
+                State("ReadOnlyState", listOf(actionConfig), listOf())
         )
 
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)
@@ -369,19 +369,19 @@ class IndexStateManagementHistoryIT : IndexStateManagementRestTestCase() {
         val actualHistory = getLatestHistory(historySearchResponse)
 
         val expectedHistory = ManagedIndexMetaData(
-            indexName,
-            getUuid(indexName),
-            policyID,
-            actualHistory.policySeqNo,
-            policyPrimaryTerm = actualHistory.policyPrimaryTerm,
-            policyCompleted = null,
-            rolledOver = null,
-            transitionTo = null,
-            stateMetaData = StateMetaData(name = states[0].name, startTime = actualHistory.stateMetaData!!.startTime),
-            actionMetaData = null,
-            stepMetaData = null,
-            policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
-            info = mapOf("message" to "Successfully initialized policy: $policyID")
+                indexName,
+                getUuid(indexName),
+                policyID,
+                actualHistory.policySeqNo,
+                policyPrimaryTerm = actualHistory.policyPrimaryTerm,
+                policyCompleted = null,
+                rolledOver = null,
+                transitionTo = null,
+                stateMetaData = StateMetaData(name = states[0].name, startTime = actualHistory.stateMetaData!!.startTime),
+                actionMetaData = null,
+                stepMetaData = null,
+                policyRetryInfo = PolicyRetryInfoMetaData(false, 0),
+                info = mapOf("message" to "Successfully initialized policy: $policyID")
         )
 
         assertEquals(expectedHistory, actualHistory)

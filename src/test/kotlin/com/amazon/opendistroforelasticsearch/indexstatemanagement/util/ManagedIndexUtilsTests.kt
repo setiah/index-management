@@ -16,11 +16,12 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.util
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementPlugin.Companion.INDEX_STATE_MANAGEMENT_INDEX
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Conditions
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Transition
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.RolloverActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.coordinator.SweptManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Conditions
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Transition
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.RolloverActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.coordinator.SweptManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.*
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomChangePolicy
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomClusterStateManagedIndexConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomSweptManagedIndexConfig
@@ -103,19 +104,19 @@ class ManagedIndexUtilsTests : ESTestCase() {
                 uuid = clusterConfig.uuid, policyID = clusterConfig.policyID, seqNo = 5, primaryTerm = 17)
 
         val requests = getCreateManagedIndexRequests(
-            mapOf(
-                clusterConfigToCreate.uuid to clusterConfigToCreate,
-                clusterConfigToUpdate.uuid to clusterConfigToUpdate,
-                clusterConfig.uuid to clusterConfig,
-                clusterConfigBeingUpdated.uuid to clusterConfigBeingUpdated
-            ),
-            mapOf(
-                sweptConfig.uuid to sweptConfig,
-                sweptConfigToDelete.uuid to sweptConfigToDelete,
-                sweptConfigToBeUpdated.uuid to sweptConfigToBeUpdated,
-                sweptConfigBeingUpdated.uuid to sweptConfigBeingUpdated
-            ),
-            5
+                mapOf(
+                        clusterConfigToCreate.uuid to clusterConfigToCreate,
+                        clusterConfigToUpdate.uuid to clusterConfigToUpdate,
+                        clusterConfig.uuid to clusterConfig,
+                        clusterConfigBeingUpdated.uuid to clusterConfigBeingUpdated
+                ),
+                mapOf(
+                        sweptConfig.uuid to sweptConfig,
+                        sweptConfigToDelete.uuid to sweptConfigToDelete,
+                        sweptConfigToBeUpdated.uuid to sweptConfigToBeUpdated,
+                        sweptConfigBeingUpdated.uuid to sweptConfigBeingUpdated
+                ),
+                5
         )
 
         assertEquals("Too many requests", 1, requests.size)
@@ -150,18 +151,18 @@ class ManagedIndexUtilsTests : ESTestCase() {
                 uuid = clusterConfig.uuid, policyID = clusterConfig.policyID, seqNo = 5, primaryTerm = 17)
 
         val requests = getDeleteManagedIndexRequests(
-            mapOf(
-                clusterConfigToCreate.uuid to clusterConfigToCreate,
-                clusterConfigToUpdate.uuid to clusterConfigToUpdate,
-                clusterConfig.uuid to clusterConfig,
-                clusterConfigBeingUpdated.uuid to clusterConfigBeingUpdated
-            ),
-            mapOf(
-                sweptConfig.uuid to sweptConfig,
-                sweptConfigToDelete.uuid to sweptConfigToDelete,
-                sweptConfigToBeUpdated.uuid to sweptConfigToBeUpdated,
-                sweptConfigBeingUpdated.uuid to sweptConfigBeingUpdated
-            )
+                mapOf(
+                        clusterConfigToCreate.uuid to clusterConfigToCreate,
+                        clusterConfigToUpdate.uuid to clusterConfigToUpdate,
+                        clusterConfig.uuid to clusterConfig,
+                        clusterConfigBeingUpdated.uuid to clusterConfigBeingUpdated
+                ),
+                mapOf(
+                        sweptConfig.uuid to sweptConfig,
+                        sweptConfigToDelete.uuid to sweptConfigToDelete,
+                        sweptConfigToBeUpdated.uuid to sweptConfigToBeUpdated,
+                        sweptConfigBeingUpdated.uuid to sweptConfigBeingUpdated
+                )
         )
 
         assertEquals("Too many requests", 1, requests.size)

@@ -17,26 +17,28 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ChangePolicy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.StateFilter
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Transition
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.DeleteActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.OpenActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ReadOnlyActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.RolloverActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.StateMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ChangePolicy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.StateFilter
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Transition
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.DeleteActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.OpenActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ReadOnlyActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.RolloverActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.StateMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestChangePolicyAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomPolicy
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomReplicaCountActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomState
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestChangePolicyAction.Companion.INDEX_NOT_MANAGED
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILED_INDICES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILURES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.UPDATED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestChangePolicyAction.Companion.INDEX_NOT_MANAGED
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestRetryFailedManagedIndexAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILURES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.UPDATED_INDICES
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import org.elasticsearch.client.ResponseException
 import org.elasticsearch.common.settings.Settings
@@ -360,7 +362,7 @@ class RestChangePolicyActionIT : IndexStateManagementRestTestCase() {
                             assertStateEquals(StateMetaData(policy.defaultState, Instant.now().toEpochMilli()), stateMetaDataMap),
                         ActionMetaData.ACTION to fun(actionMetaDataMap: Any?): Boolean =
                             assertActionEquals(ActionMetaData(name = ActionConfig.ActionType.READ_ONLY.type, startTime = Instant.now().toEpochMilli(), index = 0,
-                                failed = false, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
+                                    failed = false, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
                     )
                 ), getExplainMap(index), false)
         }
@@ -391,7 +393,7 @@ class RestChangePolicyActionIT : IndexStateManagementRestTestCase() {
                             assertStateEquals(StateMetaData(policy.defaultState, Instant.now().toEpochMilli()), stateMetaDataMap),
                         ActionMetaData.ACTION to fun(actionMetaDataMap: Any?): Boolean =
                             assertActionEquals(ActionMetaData(name = ActionConfig.ActionType.TRANSITION.type, startTime = Instant.now().toEpochMilli(), index = 0,
-                                failed = false, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
+                                    failed = false, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
                     )
                 ), getExplainMap(index), false)
         }

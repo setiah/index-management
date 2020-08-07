@@ -15,7 +15,8 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.model
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.ActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.*
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.ActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.nonNullRandomConditions
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomChangePolicy
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomDeleteActionConfig
@@ -33,7 +34,7 @@ import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomSnapshot
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomState
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomTransition
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.toJsonString
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.DestinationType
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.DestinationType
 import org.elasticsearch.common.xcontent.LoggingDeprecationHandler
 import org.elasticsearch.common.xcontent.XContentParser
 import org.elasticsearch.common.xcontent.XContentType

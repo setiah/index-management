@@ -18,23 +18,24 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementPlugin.Companion.INDEX_STATE_MANAGEMENT_HISTORY_TYPE
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementPlugin.Companion.INDEX_STATE_MANAGEMENT_INDEX
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementPlugin.Companion.POLICY_BASE_URI
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ChangePolicy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy.Companion.POLICY_TYPE
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.StateFilter
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.PolicyRetryInfoMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.StateMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler.RestExplainAction
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILED_INDICES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILURES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.UPDATED_INDICES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util._ID
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util._PRIMARY_TERM
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util._SEQ_NO
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.IndexStateManagementIndices
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ChangePolicy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy.Companion.POLICY_TYPE
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.StateFilter
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.PolicyRetryInfoMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.StateMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestExplainAction
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILURES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.UPDATED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util._ID
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util._PRIMARY_TERM
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util._SEQ_NO
 import com.amazon.opendistroforelasticsearch.jobscheduler.spi.schedule.IntervalSchedule
 import org.apache.http.HttpEntity
 import org.apache.http.HttpHeaders
@@ -62,7 +63,6 @@ import org.elasticsearch.index.seqno.SequenceNumbers
 import org.elasticsearch.rest.RestRequest
 import org.elasticsearch.rest.RestStatus
 import org.elasticsearch.test.ESTestCase
-import org.elasticsearch.test.rest.ESRestTestCase
 import org.junit.AfterClass
 import org.junit.rules.DisableOnDebug
 import java.io.IOException
@@ -83,9 +83,9 @@ abstract class IndexStateManagementRestTestCase : IndexManagementRestTestCase() 
     private val isMultiNode = System.getProperty("cluster.number_of_nodes", "1").toInt() > 1
 
     protected fun createPolicy(
-        policy: Policy,
-        policyId: String = ESTestCase.randomAlphaOfLength(10),
-        refresh: Boolean = true
+            policy: Policy,
+            policyId: String = ESTestCase.randomAlphaOfLength(10),
+            refresh: Boolean = true
     ): Policy {
         val response = createPolicyJson(policy.toJsonString(), policyId, refresh)
 

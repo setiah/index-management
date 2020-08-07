@@ -15,9 +15,9 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.model
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.Chime
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.CustomWebhook
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.Slack
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.Chime
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.CustomWebhook
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.Slack
 import org.elasticsearch.test.ESTestCase
 
 /**

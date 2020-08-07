@@ -15,9 +15,9 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.coordinator
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementIndices
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.ManagedIndexCoordinator
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.settings.ManagedIndexSettings
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.IndexStateManagementIndices
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.ManagedIndexCoordinator
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.settings.ManagedIndexSettings
 import org.elasticsearch.Version
 import org.elasticsearch.client.Client
 import org.elasticsearch.cluster.ClusterName

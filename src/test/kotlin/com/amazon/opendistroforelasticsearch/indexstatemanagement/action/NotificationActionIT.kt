@@ -16,12 +16,12 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.action
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.Policy
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.State
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.NotificationActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.CustomWebhook
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.Destination
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.destination.DestinationType
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Policy
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.State
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.NotificationActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.CustomWebhook
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.Destination
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.destination.DestinationType
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomErrorNotification
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import org.elasticsearch.script.Script
@@ -42,32 +42,32 @@ class NotificationActionIT : IndexStateManagementRestTestCase() {
         val notificationIndex = "notification_index"
         val clusterUri = System.getProperty("tests.rest.cluster").split(",")[0]
         val destination = Destination(
-            type = DestinationType.CUSTOM_WEBHOOK,
-            chime = null,
-            slack = null,
-            customWebhook = CustomWebhook(
-                url = "http://$clusterUri/$notificationIndex/_doc",
-                scheme = null,
-                host = null,
-                port = -1,
-                path = null,
-                queryParams = emptyMap(),
-                headerParams = mapOf("Content-Type" to "application/json"),
-                username = null,
-                password = null
-            )
+                type = DestinationType.CUSTOM_WEBHOOK,
+                chime = null,
+                slack = null,
+                customWebhook = CustomWebhook(
+                        url = "http://$clusterUri/$notificationIndex/_doc",
+                        scheme = null,
+                        host = null,
+                        port = -1,
+                        path = null,
+                        queryParams = emptyMap(),
+                        headerParams = mapOf("Content-Type" to "application/json"),
+                        username = null,
+                        password = null
+                )
         )
         val messageTemplate = Script(ScriptType.INLINE, Script.DEFAULT_TEMPLATE_LANG, "{ \"testing\": 5 }", emptyMap())
         val actionConfig = NotificationActionConfig(destination = destination, messageTemplate = messageTemplate, index = 0)
         val states = listOf(State(name = "NotificationState", actions = listOf(actionConfig), transitions = emptyList()))
         val policy = Policy(
-            id = policyID,
-            description = "$testIndexName description",
-            schemaVersion = 1L,
-            lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
-            errorNotification = randomErrorNotification(),
-            defaultState = states[0].name,
-            states = states
+                id = policyID,
+                description = "$testIndexName description",
+                schemaVersion = 1L,
+                lastUpdatedTime = Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                errorNotification = randomErrorNotification(),
+                defaultState = states[0].name,
+                states = states
         )
 
         createPolicy(policy, policyID)

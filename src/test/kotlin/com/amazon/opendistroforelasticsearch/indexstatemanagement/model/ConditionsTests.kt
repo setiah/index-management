@@ -15,6 +15,7 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.model
 
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.Conditions
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomByteSizeValue
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomTimeValueObject
 import org.elasticsearch.common.unit.ByteSizeValue

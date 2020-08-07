@@ -17,14 +17,15 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.resthandler
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexStateManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.managedindexmetadata.ActionMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.resthandler.RestRetryFailedManagedIndexAction
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomForceMergeActionConfig
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomPolicy
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.randomState
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILED_INDICES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.FAILURES
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.util.UPDATED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILED_INDICES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.FAILURES
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.UPDATED_INDICES
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.waitFor
 import org.elasticsearch.client.ResponseException
 import org.elasticsearch.rest.RestRequest
@@ -263,7 +264,7 @@ class RestRetryFailedManagedIndexActionIT : IndexStateManagementRestTestCase() {
                     indexName to listOf(
                         ActionMetaData.ACTION to fun(actionMetaDataMap: Any?): Boolean =
                             assertActionEquals(ActionMetaData(name = "force_merge", startTime = Instant.now().toEpochMilli(), failed = false,
-                                index = 0, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
+                                    index = 0, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
                     )
                 ), getExplainMap(indexName), false)
         }
@@ -285,7 +286,7 @@ class RestRetryFailedManagedIndexActionIT : IndexStateManagementRestTestCase() {
                             actionMetaDataMap as Map<String, Any>
                             firstStartTime = actionMetaDataMap[ManagedIndexMetaData.START_TIME] as Long
                             return assertActionEquals(ActionMetaData(name = "force_merge", startTime = Instant.now().toEpochMilli(), failed = true,
-                                index = 0, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
+                                    index = 0, consumedRetries = 0, lastRetryTime = null, actionProperties = null), actionMetaDataMap)
                         }
                     )
                 ), getExplainMap(indexName), false)

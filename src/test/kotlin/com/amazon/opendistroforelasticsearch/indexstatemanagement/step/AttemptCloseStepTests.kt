@@ -15,9 +15,10 @@
 
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.step
 
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.ManagedIndexMetaData
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.model.action.CloseActionConfig
-import com.amazon.opendistroforelasticsearch.indexstatemanagement.step.close.AttemptCloseStep
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.ManagedIndexMetaData
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.model.action.CloseActionConfig
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.step.Step
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.step.close.AttemptCloseStep
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
