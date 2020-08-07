@@ -122,9 +122,9 @@ fun randomDeleteActionConfig(): DeleteActionConfig {
 }
 
 fun randomRolloverActionConfig(
-    minSize: ByteSizeValue = randomByteSizeValue(),
-    minDocs: Long = ESRestTestCase.randomLongBetween(1, 1000),
-    minAge: TimeValue = randomTimeValueObject()
+        minSize: ByteSizeValue = randomByteSizeValue(),
+        minDocs: Long = ESRestTestCase.randomLongBetween(1, 1000),
+        minAge: TimeValue = randomTimeValueObject()
 ): RolloverActionConfig {
     return RolloverActionConfig(
             minSize = minSize,

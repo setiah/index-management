@@ -2,16 +2,10 @@ package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyz
 
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.IndexManagementRestTestCase
 import com.amazon.opendistroforelasticsearch.indexstatemanagement.makeRequest
-import org.elasticsearch.client.Request
-import org.elasticsearch.client.Response
 import org.elasticsearch.client.ResponseException
-import org.elasticsearch.common.io.Streams
 import org.elasticsearch.common.settings.Settings
-import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.rest.RestRequest.Method.POST
 import org.elasticsearch.rest.RestStatus
-import java.io.File
-import java.io.InputStreamReader
 
 class RestRefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
 
