@@ -24,7 +24,7 @@ class TransportRefreshSynonymAnalyzerAction :
         TransportBroadcastByNodeAction<
                 RefreshSynonymAnalyzerRequest,
                 RefreshSynonymAnalyzerResponse,
-                TransportBroadcastByNodeAction.EmptyResult> {
+                ShardRefreshSynonymAnalyzerResponse> {
 
     @Inject
     constructor(
@@ -51,20 +51,34 @@ class TransportRefreshSynonymAnalyzerAction :
     private val analysisRegistry: AnalysisRegistry
 
     @Throws(IOException::class)
-    override fun readShardResult(`in`: StreamInput?): EmptyResult? {
-        return EmptyResult.readEmptyResultFrom(`in`)
+    override fun readShardResult(`in`: StreamInput): ShardRefreshSynonymAnalyzerResponse? {
+        return ShardRefreshSynonymAnalyzerResponse(`in`)
     }
 
-    override fun newResponse(
-        request: RefreshSynonymAnalyzerRequest?,
-        totalShards: Int,
-        successfulShards: Int,
-        failedShards: Int,
-        responses: List<EmptyResult?>?,
-        shardFailures: List<DefaultShardOperationFailedException>,
-        clusterState: ClusterState?
-    ): RefreshSynonymAnalyzerResponse? {
-        return RefreshSynonymAnalyzerResponse(totalShards, successfulShards, failedShards, shardFailures)
+//    override fun newResponse(
+//        request: RefreshSynonymAnalyzerRequest?,
+//        totalShards: Int,
+//        successfulShards: Int,
+//        failedShards: Int,
+//        responses: List<EmptyResult?>?,
+//        shardFailures: List<DefaultShardOperationFailedException>,
+//        clusterState: ClusterState?
+//    ): RefreshSynonymAnalyzerResponse? {
+//        return RefreshSynonymAnalyzerResponse(totalShards, successfulShards, failedShards, shardFailures)
+//    }
+
+    override fun newResponse(request: RefreshSynonymAnalyzerRequest?,
+                             totalShards: Int,
+                             successfulShards: Int,
+                             failedShards: Int,
+                             results: List<ShardRefreshSynonymAnalyzerResponse>,
+                             shardFailures: List<DefaultShardOperationFailedException>,
+                             clusterState: ClusterState?): RefreshSynonymAnalyzerResponse {
+        val shardResponses: MutableMap<String, List<String>> = HashMap()
+        for(response in results) {
+            shardResponses.put(response.indexName, response.reloadedAnalyzers)
+        }
+        return RefreshSynonymAnalyzerResponse(totalShards, successfulShards, failedShards, shardFailures, shardResponses)
     }
 
     @Throws(IOException::class)
@@ -73,11 +87,11 @@ class TransportRefreshSynonymAnalyzerAction :
     }
 
     @Throws(IOException::class)
-    override fun shardOperation(request: RefreshSynonymAnalyzerRequest?, shardRouting: ShardRouting): EmptyResult? {
+    override fun shardOperation(request: RefreshSynonymAnalyzerRequest?, shardRouting: ShardRouting): ShardRefreshSynonymAnalyzerResponse {
         val indexShard: IndexShard = indicesService.indexServiceSafe(shardRouting.shardId().index).getShard(shardRouting.shardId().id())
         logger.info("Plugin reloading search analyzers")
-        indexShard.mapperService().reloadSearchAnalyzers(analysisRegistry)
-        return EmptyResult.INSTANCE
+        val reloadedAnalyzers: List<String> = indexShard.mapperService().reloadSearchAnalyzers(analysisRegistry)
+        return ShardRefreshSynonymAnalyzerResponse(shardRouting.shardId(), shardRouting.indexName, reloadedAnalyzers)
     }
 
     /**
