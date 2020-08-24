@@ -8,6 +8,7 @@ import org.elasticsearch.common.io.stream.StreamOutput
 import org.elasticsearch.common.xcontent.ConstructingObjectParser
 import org.elasticsearch.common.xcontent.ToXContent.Params
 import org.elasticsearch.common.xcontent.XContentBuilder
+import org.elasticsearch.rest.action.RestActions
 import java.io.IOException
 import java.util.*
 import java.util.function.Function
@@ -15,6 +16,7 @@ import java.util.function.Function
 class RefreshSynonymAnalyzerResponse : BroadcastResponse {
 
     private var results: MutableMap<String, List<String>> = HashMap()
+
     protected var logger = LogManager.getLogger(javaClass)
 
     @Throws(IOException::class)
@@ -40,10 +42,12 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
     @Throws(IOException::class)
     override fun toXContent(builder: XContentBuilder, params: Params?): XContentBuilder? {
         builder.startObject()
+        RestActions.buildBroadcastShardsHeader(builder, params, totalShards, successfulShards, -1, failedShards, null)
+
         for (index in results.keys) {
             val reloadedAnalyzers: List<String> = results.get(index)!!
             builder.startObject(index)
-            builder.startArray("analyzers")
+            builder.startArray("refreshed_analyzers")
             for (analyzer in reloadedAnalyzers) {
                 logger.info(analyzer)
                 builder.value(analyzer)
