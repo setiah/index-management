@@ -1,5 +1,6 @@
 package com.amazon.opendistroforelasticsearch.indexstatemanagement.refreshanalyzer
 
+import com.amazon.opendistroforelasticsearch.indexstatemanagement.ism.util.buildInvalidIndexResponse
 import org.apache.logging.log4j.LogManager
 import org.elasticsearch.action.support.DefaultShardOperationFailedException
 import org.elasticsearch.action.support.broadcast.BroadcastResponse
@@ -16,14 +17,21 @@ import java.util.function.Function
 class RefreshSynonymAnalyzerResponse : BroadcastResponse {
 
     private var results: MutableMap<String, List<String>> = HashMap()
+    private var shardFailures: MutableList<FailedShardDetails> = mutableListOf()
+    private var temp: List<DefaultShardOperationFailedException> = mutableListOf()
 
     protected var logger = LogManager.getLogger(javaClass)
 
     @Throws(IOException::class)
     constructor(inp: StreamInput) : super(inp) {
-        val size: Int = inp.readVInt()
-        for(i in 0..size) {
+        val resultSize: Int = inp.readVInt()
+        for(i in 0..resultSize) {
             results.put(inp.readString(), inp.readStringArray().toList())
+        }
+
+        val failureSize: Int = inp.readVInt()
+        for(i in 0..failureSize) {
+            shardFailures.add(FailedShardDetails(inp.readString(), inp.readInt(), inp.readString()))
         }
     }
 
@@ -37,6 +45,10 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
         totalShards, successfulShards, failedShards, shardFailures
     ) {
         this.results = results
+        this.temp = shardFailures
+        for(failure in shardFailures) {
+            this.shardFailures.add(FailedShardDetails(failure.index()!!, failure.shardId(), failure.reason()))
+        }
     }
 
     @Throws(IOException::class)
@@ -44,17 +56,27 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
         builder.startObject()
         RestActions.buildBroadcastShardsHeader(builder, params, totalShards, successfulShards, -1, failedShards, null)
 
+        builder.startObject("_successful")
         for (index in results.keys) {
             val reloadedAnalyzers: List<String> = results.get(index)!!
-            builder.startObject(index)
+            builder.field("index", index)
             builder.startArray("refreshed_analyzers")
             for (analyzer in reloadedAnalyzers) {
-                logger.info(analyzer)
                 builder.value(analyzer)
             }
             builder.endArray()
+        }
+        builder.endObject()
+
+        builder.startObject("_failed")
+        for (failure in shardFailures) {
+            builder.startObject()
+            builder.value(failure.index)
+            builder.value(failure.shardId)
+            builder.value(failure.failureReason)
             builder.endObject()
         }
+        builder.endObject()
 
         builder.endObject()
         return builder
@@ -65,7 +87,7 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
                 Function { arg: Array<Any> ->
                     val response = arg[0] as RefreshSynonymAnalyzerResponse
                     RefreshSynonymAnalyzerResponse(response.totalShards, response.successfulShards, response.failedShards,
-                            Arrays.asList(*response.shardFailures), response.results)
+                            response.temp, response.results)
                 })
 
         init {
@@ -80,10 +102,24 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
     @Throws(IOException::class)
     override fun writeTo(out: StreamOutput) {
         super.writeTo(out)
+
         out.writeVInt(results.size)
         for ((key, value) in results.entries) {
             out.writeString(key)
             out.writeStringArray(value.toTypedArray())
         }
+
+        out.writeVInt(shardFailures.size)
+        for(failure in shardFailures) {
+            out.writeString(failure.index)
+            out.writeInt(failure.shardId)
+            out.writeString(failure.failureReason)
+        }
+    }
+
+    class FailedShardDetails(index: String, shardId: Int, failureReason: String) {
+        val index = index
+        val shardId = shardId
+        val failureReason = failureReason
     }
 }
