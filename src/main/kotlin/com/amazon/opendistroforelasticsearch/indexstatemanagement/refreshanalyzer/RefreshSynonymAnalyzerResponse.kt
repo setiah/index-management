@@ -56,8 +56,9 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
         builder.startObject()
         RestActions.buildBroadcastShardsHeader(builder, params, totalShards, successfulShards, -1, failedShards, null)
 
-        builder.startObject("_successful")
+        builder.startArray("_successful")
         for (index in results.keys) {
+            builder.startObject()
             val reloadedAnalyzers: List<String> = results.get(index)!!
             builder.field("index", index)
             builder.startArray("refreshed_analyzers")
@@ -65,10 +66,11 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
                 builder.value(analyzer)
             }
             builder.endArray()
+            builder.endObject()
         }
-        builder.endObject()
+        builder.endArray()
 
-        builder.startObject("_failed")
+        builder.startArray("_failed")
         for (failure in shardFailures) {
             builder.startObject()
             builder.value(failure.index)
@@ -76,7 +78,7 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
             builder.value(failure.failureReason)
             builder.endObject()
         }
-        builder.endObject()
+        builder.endArray()
 
         builder.endObject()
         return builder
