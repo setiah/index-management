@@ -70,18 +70,6 @@ class TransportRefreshSynonymAnalyzerAction :
         return ShardRefreshSynonymAnalyzerResponse(`in`)
     }
 
-//    override fun newResponse(
-//        request: RefreshSynonymAnalyzerRequest?,
-//        totalShards: Int,
-//        successfulShards: Int,
-//        failedShards: Int,
-//        responses: List<EmptyResult?>?,
-//        shardFailures: List<DefaultShardOperationFailedException>,
-//        clusterState: ClusterState?
-//    ): RefreshSynonymAnalyzerResponse? {
-//        return RefreshSynonymAnalyzerResponse(totalShards, successfulShards, failedShards, shardFailures)
-//    }
-
     override fun newResponse(
         request: RefreshSynonymAnalyzerRequest?,
         totalShards: Int,
@@ -106,7 +94,7 @@ class TransportRefreshSynonymAnalyzerAction :
     @Throws(IOException::class)
     override fun shardOperation(request: RefreshSynonymAnalyzerRequest?, shardRouting: ShardRouting): ShardRefreshSynonymAnalyzerResponse {
         val indexShard: IndexShard = indicesService.indexServiceSafe(shardRouting.shardId().index).getShard(shardRouting.shardId().id())
-        logger.info("Plugin reloading search analyzers")
+        logger.info("Reloading search analyzers for ${shardRouting.shardId().index.name}")
         val reloadedAnalyzers: List<String> = indexShard.mapperService().reloadSearchAnalyzers(analysisRegistry)
         return ShardRefreshSynonymAnalyzerResponse(shardRouting.shardId(), shardRouting.indexName, reloadedAnalyzers)
     }
@@ -118,9 +106,6 @@ class TransportRefreshSynonymAnalyzerAction :
         return clusterState.routingTable().allShards(concreteIndices)
     }
 
-    // TODO(setiah): Check if md5 content validation possible on nodes
-    // TODO(setiah): Check if needed to block refresh when cluster has metadata write block
-    // Why it should be ok? - Indices cache cannot be cleared when there is a metadata write block. Similar to that.
     override fun checkGlobalBlock(state: ClusterState, request: RefreshSynonymAnalyzerRequest?): ClusterBlockException? {
         return state.blocks().globalBlockedException(ClusterBlockLevel.METADATA_WRITE)
     }

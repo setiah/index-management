@@ -25,7 +25,6 @@ import org.elasticsearch.common.xcontent.ToXContent.Params
 import org.elasticsearch.common.xcontent.XContentBuilder
 import org.elasticsearch.rest.action.RestActions
 import java.io.IOException
-import java.util.*
 import java.util.function.Function
 
 class RefreshSynonymAnalyzerResponse : BroadcastResponse {
@@ -109,10 +108,6 @@ class RefreshSynonymAnalyzerResponse : BroadcastResponse {
         init {
             declareBroadcastFields(PARSER)
         }
-
-//        fun fromXContent(parser: XContentParser?): RefreshSynonymAnalyzerResponse? {
-//            return PARSER.apply(parser, null)
-//        }
     }
 
     @Throws(IOException::class)
