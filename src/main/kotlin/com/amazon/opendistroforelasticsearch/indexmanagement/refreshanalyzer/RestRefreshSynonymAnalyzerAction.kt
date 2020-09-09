@@ -15,6 +15,7 @@
 
 package com.amazon.opendistroforelasticsearch.indexmanagement.refreshanalyzer
 
+import com.amazon.opendistroforelasticsearch.indexmanagement.IndexManagementPlugin.Companion.ANALYZER_BASE_URI
 import org.elasticsearch.client.node.NodeClient
 import org.elasticsearch.common.Strings
 import org.elasticsearch.rest.BaseRestHandler
@@ -54,6 +55,6 @@ class RestRefreshSynonymAnalyzerAction : BaseRestHandler() {
     }
 
     companion object {
-        const val REFRESH_SYNONYM_ANALYZER_URI = "/{index}/_refresh_synonym_analyzer"
+        const val REFRESH_SYNONYM_ANALYZER_URI = "$ANALYZER_BASE_URI/refresh_synonym_analyzer/{index}"
     }
 }

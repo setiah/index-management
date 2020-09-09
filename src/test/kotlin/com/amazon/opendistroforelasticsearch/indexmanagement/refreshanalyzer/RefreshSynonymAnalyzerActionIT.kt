@@ -15,6 +15,7 @@
 
 package com.amazon.opendistroforelasticsearch.indexmanagement.refreshanalyzer
 
+import com.amazon.opendistroforelasticsearch.indexmanagement.IndexManagementPlugin
 import com.amazon.opendistroforelasticsearch.indexmanagement.IndexManagementRestTestCase
 import org.elasticsearch.client.Request
 import org.elasticsearch.common.io.Streams
@@ -202,7 +203,8 @@ class RefreshSynonymAnalyzerActionIT : IndexManagementRestTestCase() {
         }
 
         fun refreshAnalyzer(indexName: String) {
-            val request = Request("POST", "/$indexName/_refresh_synonym_analyzer")
+            val request = Request("POST",
+                    "${IndexManagementPlugin.ANALYZER_BASE_URI}/refresh_synonym_analyzer/$indexName")
             client().performRequest(request)
         }
 
